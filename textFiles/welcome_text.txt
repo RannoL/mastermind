@@ -5,7 +5,7 @@ You need to guess a 4 color ordered combination.
 Colors are Red(r), Green(g), Blue(b),
 White(w), Cyan(c) and Magenta(m)
 
-Format your input in 4 letters. Each letter represents a colored peg.
+Each letter represents a colored peg.
 For example if you want to guess a combination RED GREEN BLUE CYAN
 type rgbc. Press enter to finish your turn.
 
@@ -14,4 +14,4 @@ which are correct colors BUT in the wrong place and
 which colors are not in the code.
 
 
-Good luck!
+You have 12 guesses to figure out the code. Good luck!
