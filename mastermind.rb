@@ -32,14 +32,27 @@ class Mastermind
   end
 
   def start_game
-    @computer = Computer.new('computer')
-    @player = Player.new('player')
+    @computer = Computer.new
+    @player = Player.new
+    @controller = Controller.new
+    @code = @computer.code
 
     Colors.sample
     # Main game loop
-    while @player.guesses <= 12
+    while @player.guesses <= 12 && @code != @controller.guessed_code
       guess = @player.get_guess
-      puts "this is in start_game guess #{guess}"
+      @controller.control_code(guess, @code)
+      #p @controller.guessed_code
+    end
+
+    if(@controller.guessed_code == @code)
+      puts
+      puts 'Congratulations, you are a mastermind!'
+      puts
+    else
+      puts
+      puts 'Better luck next time.'
+      puts
     end
 
   end
@@ -64,30 +77,22 @@ end
 
 # Generates code and analyses users guess
 class Computer
+  attr_accessor :code
 
-  def initialize(name)
-    @name = name
+  def initialize
     @code = []
-    @colors = %w[r g b w c m]
-    for i in 0...4
-      @code << random_pick
-    end
-    p @code
+    random_pick
   end
-
-  def control_code(guess)
-    guess = guess.split('')
-    p guess
-    # Cpeg - correct peg, Gpeg - guess peg
-    @code.each_with_index do |c_peg, c_peg_i|
-      guess.each_with_index do |g_peg,g_peg_i|
-      end
-    end
 
   private
 
   def random_pick
-    @colors.sample
+    @colors = %w[r g b w c m]
+    for i in 0...4
+      random_pick = @colors.sample
+      @code << random_pick
+    end
+    #p @code
   end
 end
 
@@ -95,8 +100,7 @@ end
 class Player
   attr_accessor :guesses
 
-  def initialize(name)
-    @name = name
+  def initialize
     @guesses = 1
   end
 
@@ -123,6 +127,54 @@ class Player
       false
     end
   end
+end
+
+# Controlles and keeps track of the guessed code
+class Controller
+  attr_accessor :guessed_code
+  def initialize
+    @guessed_code = []
+  end
+
+  def control_code(guess, code)
+    guess = guess.split('')
+    puts
+    code.each_with_index do |c_peg, c_peg_i|
+      if guess.include?(c_peg)
+        if guess[c_peg_i] == c_peg
+          @guessed_code << c_peg
+          puts "#{c_peg_i+1}. peg is correct!"
+        else
+          puts "#{c_peg_i+1}. peg is right, but at the wrong position"
+        end
+      else
+        puts "#{c_peg_i+1}. peg is false."
+      end
+    end
+  end
+
+=begin   def correct_peg(color_letter)
+    @correct_pegs += 1
+    @guessed_code << color_letter
+    puts 'Correct choices so far: '
+    @guessed_code.each do |color|
+      case color
+      when 'r'
+        print '  r  '.colorize(:color => :white, :background => :red)
+      when 'g'
+        print '  g  '.colorize(:color => :white, :background => :green)
+      when 'b'
+        print '  b  '.colorize(:color => :white, :background => :blue)
+      when 'w'
+        print '  w  '.colorize(:color => :black, :background => :white)
+      when 'c'
+        print '  c  '.colorize(:color => :white, :background => :cyan)
+      when 'm'
+        print '  m  '.colorize(:color => :white, :background => :magenta)
+      end
+    end
+  end 
+=end
 end
 
 Mastermind.new
