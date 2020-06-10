@@ -1,6 +1,10 @@
 # Welcome screen and game loop
 class Mastermind
   def initialize
+    @computer = Computer.new
+    @player = Player.new
+    @controller = Controller.new
+    @code = @computer.code
     put_welcome_banner
   end
 
@@ -31,30 +35,20 @@ class Mastermind
     start_game
   end
 
+  # Main game loop
   def start_game
-    @computer = Computer.new
-    @player = Player.new
-    @controller = Controller.new
-    @code = @computer.code
-
     Colors.sample
-    # Main game loop
     while @player.guesses <= 12 && @code != @controller.guessed_code
       guess = @player.get_guess
-      @controller.control_code(guess, @code)
-      #p @controller.guessed_code
+      @controller.control_guess(guess, @code)
     end
-
-    if(@controller.guessed_code == @code)
-      puts
+    puts
+    if @controller.guessed_code == @code
       puts 'Congratulations, you are a mastermind!'
-      puts
     else
-      puts
       puts 'Better luck next time.'
-      puts
     end
-
+    puts
   end
 
 end
@@ -136,45 +130,22 @@ class Controller
     @guessed_code = []
   end
 
-  def control_code(guess, code)
+  def control_guess(guess, code)
     guess = guess.split('')
     puts
     code.each_with_index do |c_peg, c_peg_i|
       if guess.include?(c_peg)
         if guess[c_peg_i] == c_peg
-          @guessed_code << c_peg
-          puts "#{c_peg_i+1}. peg is correct!"
+          @guessed_code[c_peg_i] = c_peg
+          puts "#{c_peg_i + 1}. peg is correct!"
         else
-          puts "#{c_peg_i+1}. peg is right, but at the wrong position"
+          puts "#{c_peg_i + 1}. peg is right, but at the wrong position"
         end
       else
-        puts "#{c_peg_i+1}. peg is false."
+        puts "#{c_peg_i + 1}. peg is false."
       end
     end
   end
-
-=begin   def correct_peg(color_letter)
-    @correct_pegs += 1
-    @guessed_code << color_letter
-    puts 'Correct choices so far: '
-    @guessed_code.each do |color|
-      case color
-      when 'r'
-        print '  r  '.colorize(:color => :white, :background => :red)
-      when 'g'
-        print '  g  '.colorize(:color => :white, :background => :green)
-      when 'b'
-        print '  b  '.colorize(:color => :white, :background => :blue)
-      when 'w'
-        print '  w  '.colorize(:color => :black, :background => :white)
-      when 'c'
-        print '  c  '.colorize(:color => :white, :background => :cyan)
-      when 'm'
-        print '  m  '.colorize(:color => :white, :background => :magenta)
-      end
-    end
-  end 
-=end
 end
 
 Mastermind.new
